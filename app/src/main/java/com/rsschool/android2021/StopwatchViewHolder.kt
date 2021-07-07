@@ -6,6 +6,9 @@ import android.os.CountDownTimer
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
 import com.rsschool.android2021.databinding.StopwatchItemBinding
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class StopwatchViewHolder(
     private val binding: StopwatchItemBinding,
@@ -14,6 +17,8 @@ class StopwatchViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private var timer: CountDownTimer? = null
+
+    private var current = 0L
 
     fun bind(stopwatch: Stopwatch) {
         binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
@@ -44,6 +49,15 @@ class StopwatchViewHolder(
     private fun startTimer(stopwatch: Stopwatch) {
         val drawable = resources.getDrawable(R.drawable.ic_baseline_pause_24)
         binding.startPauseButton.setImageDrawable(drawable)
+
+        binding.customView.setPeriod(PERIOD2)
+        GlobalScope.launch {
+            while (current < PERIOD * REPEAT) {
+                current += INTERVAL
+                binding.customView.setCurrent(current)
+                delay(INTERVAL)
+            }
+        }
 
         timer?.cancel()
         timer = getCountDownTimer(stopwatch)
@@ -103,5 +117,9 @@ class StopwatchViewHolder(
         private const val START_TIME = "00:00:00:00"
         private const val UNIT_TEN_MS = 10L
         private const val PERIOD = 1000L * 60L * 60L * 24L // Day
+
+        private const val INTERVAL = 100L
+        private const val PERIOD2 = 1000L * 30 // 30 sec
+        private const val REPEAT = 10 // 10 times
     }
 }
