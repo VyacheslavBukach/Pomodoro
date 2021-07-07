@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
@@ -32,6 +31,16 @@
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/blinking_indicator"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.rsschool.android2021.CustomView
+            android:id="@+id/custom_view"
+            android:layout_width="40dp"
+            android:layout_height="0dp"
+            app:custom_color="@color/purple_500"
+            app:custom_style="fill"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/start_pause_button"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
