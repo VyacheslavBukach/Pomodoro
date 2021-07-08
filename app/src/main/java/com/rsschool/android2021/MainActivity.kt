@@ -24,8 +24,12 @@ class MainActivity : AppCompatActivity(), StopwatchListener {
             adapter = stopwatchAdapter
         }
 
+        // hide asterisk character
+        binding.minutes.transformationMethod = null
+
         binding.addNewStopwatchButton.setOnClickListener {
-            stopwatches.add(Stopwatch(nextId++, 0, false))
+            val minutes = binding.minutes.text.toString().toLong() * 60_000L
+            stopwatches.add(Stopwatch(nextId++, 3_000, false))
             stopwatchAdapter.submitList(stopwatches.toList())
         }
     }
@@ -38,9 +42,9 @@ class MainActivity : AppCompatActivity(), StopwatchListener {
         changeStopwatch(id, currentMs, false)
     }
 
-    override fun reset(id: Int) {
-        changeStopwatch(id, 0L, false)
-    }
+//    override fun reset(id: Int) {
+//        changeStopwatch(id, 0L, false)
+//    }
 
     override fun delete(id: Int) {
         stopwatches.remove(stopwatches.find { it.id == id })

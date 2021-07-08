@@ -6,9 +6,6 @@ import android.os.CountDownTimer
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
 import com.rsschool.android2021.databinding.StopwatchItemBinding
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class StopwatchViewHolder(
     private val binding: StopwatchItemBinding,
@@ -17,8 +14,6 @@ class StopwatchViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private var timer: CountDownTimer? = null
-
-    private var current = 0L
 
     fun bind(stopwatch: Stopwatch) {
         binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
@@ -41,7 +36,7 @@ class StopwatchViewHolder(
             }
         }
 
-        binding.restartButton.setOnClickListener { listener.reset(stopwatch.id) }
+//        binding.restartButton.setOnClickListener { listener.reset(stopwatch.id) }
 
         binding.deleteButton.setOnClickListener { listener.delete(stopwatch.id) }
     }
@@ -49,15 +44,6 @@ class StopwatchViewHolder(
     private fun startTimer(stopwatch: Stopwatch) {
         val drawable = resources.getDrawable(R.drawable.ic_baseline_pause_24)
         binding.startPauseButton.setImageDrawable(drawable)
-
-        binding.customView.setPeriod(PERIOD2)
-        GlobalScope.launch {
-            while (current < PERIOD * REPEAT) {
-                current += INTERVAL
-                binding.customView.setCurrent(current)
-                delay(INTERVAL)
-            }
-        }
 
         timer?.cancel()
         timer = getCountDownTimer(stopwatch)
@@ -78,16 +64,16 @@ class StopwatchViewHolder(
     }
 
     private fun getCountDownTimer(stopwatch: Stopwatch): CountDownTimer {
-        return object : CountDownTimer(PERIOD, UNIT_TEN_MS) {
-            val interval = UNIT_TEN_MS
+        return object : CountDownTimer(stopwatch.currentMs, UNIT_TEN_MS) {
 
             override fun onTick(millisUntilFinished: Long) {
-                stopwatch.currentMs += interval
+                stopwatch.currentMs = millisUntilFinished
                 binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
             }
 
             override fun onFinish() {
                 binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
+                stopTimer(stopwatch)
             }
         }
     }
@@ -99,9 +85,8 @@ class StopwatchViewHolder(
         val h = this / 1000 / 3600
         val m = this / 1000 % 3600 / 60
         val s = this / 1000 % 60
-        val ms = this % 1000 / 10
 
-        return "${displaySlot(h)}:${displaySlot(m)}:${displaySlot(s)}:${displaySlot(ms)}"
+        return "${displaySlot(h)}:${displaySlot(m)}:${displaySlot(s)}"
     }
 
     private fun displaySlot(count: Long): String {
@@ -114,8 +99,8 @@ class StopwatchViewHolder(
 
     private companion object {
 
-        private const val START_TIME = "00:00:00:00"
-        private const val UNIT_TEN_MS = 10L
+        private const val START_TIME = "00:00:00"
+        private const val UNIT_TEN_MS = 1000L
         private const val PERIOD = 1000L * 60L * 60L * 24L // Day
 
         private const val INTERVAL = 100L
