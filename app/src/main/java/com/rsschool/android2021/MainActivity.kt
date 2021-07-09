@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity(), StopwatchListener {
 
         binding.addNewStopwatchButton.setOnClickListener {
             val minutes = binding.minutes.text.toString().toLong() * 60_000L
-            stopwatches.add(Stopwatch(nextId++, 3_000, false))
+            stopwatches.add(Stopwatch(nextId++, 10_000, false, 10_000))
             stopwatchAdapter.submitList(stopwatches.toList())
         }
     }
