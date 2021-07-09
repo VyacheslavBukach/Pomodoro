@@ -3,6 +3,7 @@ package com.rsschool.android2021
 import android.content.res.Resources
 import android.graphics.drawable.AnimationDrawable
 import android.os.CountDownTimer
+import android.util.Log
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
 import com.rsschool.android2021.databinding.StopwatchItemBinding
@@ -68,10 +69,13 @@ class StopwatchViewHolder(
 
             override fun onTick(millisUntilFinished: Long) {
                 stopwatch.currentMs = millisUntilFinished
+//                Log.d("mydebug", stopwatch.currentMs.toString())
                 binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
             }
 
             override fun onFinish() {
+                stopwatch.isStarted = false
+                stopwatch.currentMs = 0L
                 binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
                 stopTimer(stopwatch)
             }
