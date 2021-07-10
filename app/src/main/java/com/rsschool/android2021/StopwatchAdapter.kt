@@ -1,5 +1,6 @@
 package com.rsschool.android2021
 
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -11,12 +12,32 @@ class StopwatchAdapter(
 ) : ListAdapter<Stopwatch, StopwatchViewHolder>(itemComparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StopwatchViewHolder {
+//        Log.d("mydebug", "ho")
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = StopwatchItemBinding.inflate(layoutInflater, parent, false)
         return StopwatchViewHolder(binding, listener, binding.root.context.resources)
     }
 
     override fun onBindViewHolder(holder: StopwatchViewHolder, position: Int) {
+
+        if (holder.timer != null) {
+            holder.timer!!.cancel()
+        }
+
+        val stopwatch = getItem(position)
+
+        holder.timer = object : CountDownTimer(stopwatch.currentMs, UNIT_TEN_MS) {
+            override fun onTick(millisUntilFinished: Long) {
+                stopwatch.currentMs = millisUntilFinished
+                holder.onTick(stopwatch, millisUntilFinished)
+            }
+
+            override fun onFinish() {
+                stopwatch.isStarted = false
+                holder.bind(stopwatch)
+            }
+        }
+
         holder.bind(getItem(position))
     }
 

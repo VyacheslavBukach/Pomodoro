@@ -4,6 +4,7 @@ import android.content.res.Resources
 import android.graphics.drawable.AnimationDrawable
 import android.os.CountDownTimer
 import android.util.Log
+import android.widget.TextView
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
 import com.rsschool.android2021.databinding.StopwatchItemBinding
@@ -14,18 +15,23 @@ class StopwatchViewHolder(
     private val resources: Resources
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    private var timer: CountDownTimer? = null
+    var timer: CountDownTimer? = null
 
     fun bind(stopwatch: Stopwatch) {
         binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
 
         if (stopwatch.isStarted) {
-            startTimer(stopwatch)
+            startTimer()
         } else {
-            stopTimer(stopwatch)
+            stopTimer()
         }
 
         initButtonsListeners(stopwatch)
+    }
+
+    fun onTick(stopwatch: Stopwatch, millisUntilFinished: Long) {
+//        stopwatch.currentMs = millisUntilFinished
+        binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
     }
 
     private fun initButtonsListeners(stopwatch: Stopwatch) {
@@ -37,24 +43,21 @@ class StopwatchViewHolder(
             }
         }
 
-//        binding.restartButton.setOnClickListener { listener.reset(stopwatch.id) }
-
         binding.deleteButton.setOnClickListener { listener.delete(stopwatch.id) }
     }
 
-    private fun startTimer(stopwatch: Stopwatch) {
+    private fun startTimer() {
         val drawable = resources.getDrawable(R.drawable.ic_baseline_pause_24)
         binding.startPauseButton.setImageDrawable(drawable)
 
         timer?.cancel()
-        timer = getCountDownTimer(stopwatch)
         timer?.start()
 
         binding.blinkingIndicator.isInvisible = false
         (binding.blinkingIndicator.background as? AnimationDrawable)?.start()
     }
 
-    private fun stopTimer(stopwatch: Stopwatch) {
+    private fun stopTimer() {
         val drawable = resources.getDrawable(R.drawable.ic_baseline_play_arrow_24)
         binding.startPauseButton.setImageDrawable(drawable)
 
@@ -62,53 +65,5 @@ class StopwatchViewHolder(
 
         binding.blinkingIndicator.isInvisible = true
         (binding.blinkingIndicator.background as? AnimationDrawable)?.stop()
-    }
-
-    private fun getCountDownTimer(stopwatch: Stopwatch): CountDownTimer {
-        return object : CountDownTimer(stopwatch.currentMs, UNIT_TEN_MS) {
-
-            override fun onTick(millisUntilFinished: Long) {
-                stopwatch.currentMs = millisUntilFinished
-//                Log.d("mydebug", stopwatch.currentMs.toString())
-                binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
-            }
-
-            override fun onFinish() {
-                stopwatch.isStarted = false
-                stopwatch.currentMs = 0L
-                binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
-                stopTimer(stopwatch)
-            }
-        }
-    }
-
-    private fun Long.displayTime(): String {
-        if (this <= 0L) {
-            return START_TIME
-        }
-        val h = this / 1000 / 3600
-        val m = this / 1000 % 3600 / 60
-        val s = this / 1000 % 60
-
-        return "${displaySlot(h)}:${displaySlot(m)}:${displaySlot(s)}"
-    }
-
-    private fun displaySlot(count: Long): String {
-        return if (count / 10L > 0) {
-            "$count"
-        } else {
-            "0$count"
-        }
-    }
-
-    private companion object {
-
-        private const val START_TIME = "00:00:00"
-        private const val UNIT_TEN_MS = 1000L
-        private const val PERIOD = 1000L * 60L * 60L * 24L // Day
-
-        private const val INTERVAL = 100L
-        private const val PERIOD2 = 1000L * 30 // 30 sec
-        private const val REPEAT = 10 // 10 times
     }
 }

@@ -42,10 +42,6 @@ class MainActivity : AppCompatActivity(), StopwatchListener {
         changeStopwatch(id, currentMs, false)
     }
 
-//    override fun reset(id: Int) {
-//        changeStopwatch(id, 0L, false)
-//    }
-
     override fun delete(id: Int) {
         stopwatches.remove(stopwatches.find { it.id == id })
         stopwatchAdapter.submitList(stopwatches.toList())
