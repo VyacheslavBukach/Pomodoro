@@ -12,7 +12,6 @@ class StopwatchAdapter(
 ) : ListAdapter<Stopwatch, StopwatchViewHolder>(itemComparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StopwatchViewHolder {
-//        Log.d("mydebug", "ho")
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = StopwatchItemBinding.inflate(layoutInflater, parent, false)
         return StopwatchViewHolder(binding, listener, binding.root.context.resources)
@@ -29,7 +28,7 @@ class StopwatchAdapter(
         holder.timer = object : CountDownTimer(stopwatch.currentMs, UNIT_TEN_MS) {
             override fun onTick(millisUntilFinished: Long) {
                 stopwatch.currentMs = millisUntilFinished
-                holder.onTick(stopwatch, millisUntilFinished)
+                holder.setTime(stopwatch)
             }
 
             override fun onFinish() {
@@ -38,7 +37,7 @@ class StopwatchAdapter(
             }
         }
 
-        holder.bind(getItem(position))
+        holder.bind(stopwatch)
     }
 
     private companion object {
