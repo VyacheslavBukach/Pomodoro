@@ -3,11 +3,10 @@ package com.rsschool.android2021
 import android.content.res.Resources
 import android.graphics.drawable.AnimationDrawable
 import android.os.CountDownTimer
-import android.util.Log
-import android.widget.TextView
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
 import com.rsschool.android2021.databinding.StopwatchItemBinding
+import kotlinx.coroutines.*
 
 class StopwatchViewHolder(
     private val binding: StopwatchItemBinding,
@@ -16,21 +15,40 @@ class StopwatchViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     var timer: CountDownTimer? = null
+    private var current = 0L
+    private var job = SupervisorJob()
+    private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
     fun bind(stopwatch: Stopwatch) {
         binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
 
         if (stopwatch.isStarted) {
-            startTimer()
+            startTimer(stopwatch)
         } else {
-            stopTimer()
+            stopTimer(stopwatch)
         }
 
         initButtonsListeners(stopwatch)
     }
 
-    fun onTick(stopwatch: Stopwatch, millisUntilFinished: Long) {
-//        stopwatch.currentMs = millisUntilFinished
+    fun stop(stopwatch: Stopwatch) {
+        stopwatch.isStarted = false
+        stopwatch.currentMs = 0L
+        binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
+
+        if (stopwatch.isStarted) {
+            startTimer(stopwatch)
+        } else {
+            stopTimer(stopwatch)
+        }
+    }
+
+    fun setProgress(stopwatch: Stopwatch) {
+        binding.customView.setPeriod(PERIOD)
+        binding.customView.setCurrent(PERIOD - stopwatch.currentMs)
+    }
+
+    fun setTime(stopwatch: Stopwatch) {
         binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
     }
 
@@ -46,20 +64,34 @@ class StopwatchViewHolder(
         binding.deleteButton.setOnClickListener { listener.delete(stopwatch.id) }
     }
 
-    private fun startTimer() {
+    private fun startTimer(stopwatch: Stopwatch) {
         val drawable = resources.getDrawable(R.drawable.ic_baseline_pause_24)
         binding.startPauseButton.setImageDrawable(drawable)
 
         timer?.cancel()
         timer?.start()
 
+        current = stopwatch.currentMs
+        binding.customView.setPeriod(PERIOD)
+
+        uiScope.launch {
+            while (current >= 0) {
+                current -= INTERVAL
+                binding.customView.setCurrent(PERIOD - current)
+                delay(INTERVAL)
+            }
+        }
+
         binding.blinkingIndicator.isInvisible = false
         (binding.blinkingIndicator.background as? AnimationDrawable)?.start()
     }
 
-    private fun stopTimer() {
+    private fun stopTimer(stopwatch: Stopwatch) {
         val drawable = resources.getDrawable(R.drawable.ic_baseline_play_arrow_24)
         binding.startPauseButton.setImageDrawable(drawable)
+
+        if (job.isActive)
+            uiScope.coroutineContext.cancelChildren()
 
         timer?.cancel()
 

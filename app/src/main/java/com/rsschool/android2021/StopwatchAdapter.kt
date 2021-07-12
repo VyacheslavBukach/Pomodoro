@@ -32,12 +32,12 @@ class StopwatchAdapter(
             }
 
             override fun onFinish() {
-                stopwatch.isStarted = false
-                holder.bind(stopwatch)
+                holder.stop(stopwatch)
             }
         }
 
         holder.bind(stopwatch)
+        holder.setProgress(stopwatch)
     }
 
     private companion object {
