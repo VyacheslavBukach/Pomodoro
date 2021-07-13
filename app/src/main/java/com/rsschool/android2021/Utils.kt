@@ -5,6 +5,12 @@ const val INTERVAL = 1_000L
 const val PERIOD = 1_000L * 10 // 10 sec
 const val MINUTE_IN_MILLIS = 60_000L
 
+const val INVALID = "INVALID"
+const val COMMAND_START = "COMMAND_START"
+const val COMMAND_STOP = "COMMAND_STOP"
+const val COMMAND_ID = "COMMAND_ID"
+const val STARTED_TIMER_TIME_MS = "STARTED_TIMER_TIME"
+
 fun Long.displayTime(): String {
     if (this <= 0L) {
         return START_TIME
