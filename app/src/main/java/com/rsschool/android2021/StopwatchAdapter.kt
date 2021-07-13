@@ -25,7 +25,7 @@ class StopwatchAdapter(
 
         val stopwatch = getItem(position)
 
-        holder.timer = object : CountDownTimer(stopwatch.currentMs, UNIT_TEN_MS) {
+        holder.timer = object : CountDownTimer(stopwatch.currentMs, INTERVAL) {
             override fun onTick(millisUntilFinished: Long) {
                 stopwatch.currentMs = millisUntilFinished
                 holder.setTime(stopwatch)

@@ -33,7 +33,7 @@ class StopwatchViewHolder(
 
     fun stop(stopwatch: Stopwatch) {
         stopwatch.isStarted = false
-        stopwatch.currentMs = 0L
+        stopwatch.currentMs = stopwatch.time
         binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
 
         if (stopwatch.isStarted) {

@@ -28,8 +28,8 @@ class MainActivity : AppCompatActivity(), StopwatchListener {
         binding.minutes.transformationMethod = null
 
         binding.addNewStopwatchButton.setOnClickListener {
-            val minutes = binding.minutes.text.toString().toLong() * 60_000L
-            stopwatches.add(Stopwatch(nextId++, 10_000, false, 10_000))
+            val minutes = binding.minutes.text.toString().toLong() * MINUTE_IN_MILLIS
+            stopwatches.add(Stopwatch(nextId++, PERIOD, false, PERIOD))
             stopwatchAdapter.submitList(stopwatches.toList())
         }
     }
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity(), StopwatchListener {
         val newTimers = mutableListOf<Stopwatch>()
         stopwatches.forEach {
             if (it.isStarted && it.id != id) {
-                newTimers.add(Stopwatch(it.id, it.currentMs, false))
+                newTimers.add(Stopwatch(it.id, it.currentMs, false, PERIOD))
             } else {
                 newTimers.add(it)
             }
@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity(), StopwatchListener {
         val newTimers = mutableListOf<Stopwatch>()
         stopwatches.forEach {
             if (it.id == id) {
-                newTimers.add(Stopwatch(it.id, currentMs ?: it.currentMs, isStarted))
+                newTimers.add(Stopwatch(it.id, currentMs ?: it.currentMs, isStarted, PERIOD))
             } else {
                 newTimers.add(it)
             }

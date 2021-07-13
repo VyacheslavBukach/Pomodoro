@@ -1,10 +1,9 @@
 package com.rsschool.android2021
 
 const val START_TIME = "00:00:00"
-const val UNIT_TEN_MS = 1000L
-
-const val INTERVAL = 1000L
-const val PERIOD = 1000L * 10 // 10 sec
+const val INTERVAL = 1_000L
+const val PERIOD = 1_000L * 10 // 10 sec
+const val MINUTE_IN_MILLIS = 60_000L
 
 fun Long.displayTime(): String {
     if (this <= 0L) {
