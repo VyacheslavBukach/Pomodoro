@@ -1,6 +1,7 @@
 package com.rsschool.android2021
 
 import android.content.res.Resources
+import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
 import android.os.CountDownTimer
 import androidx.core.view.isInvisible
@@ -20,7 +21,12 @@ class StopwatchViewHolder(
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
     fun bind(stopwatch: Stopwatch) {
+        binding.stopwatchTimer.setTextColor(Color.BLACK)
         binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
+
+        if (stopwatch.isFinish) {
+            binding.stopwatchTimer.setTextColor(Color.RED)
+        }
 
         if (stopwatch.isStarted) {
             startTimer(stopwatch)
@@ -32,7 +38,9 @@ class StopwatchViewHolder(
     }
 
     fun stop(stopwatch: Stopwatch) {
+        binding.stopwatchTimer.setTextColor(Color.RED)
         stopwatch.isStarted = false
+        stopwatch.isFinish = true
         stopwatch.currentMs = stopwatch.time
         binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
 
@@ -67,6 +75,8 @@ class StopwatchViewHolder(
     private fun startTimer(stopwatch: Stopwatch) {
         val drawable = resources.getDrawable(R.drawable.ic_baseline_pause_24)
         binding.startPauseButton.setImageDrawable(drawable)
+
+        if (stopwatch.isFinish) stopwatch.isFinish = false
 
         timer?.cancel()
         timer?.start()
