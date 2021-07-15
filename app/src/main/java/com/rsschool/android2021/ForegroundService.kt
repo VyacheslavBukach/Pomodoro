@@ -16,7 +16,8 @@ class ForegroundService : Service() {
 
     private var isServiceStarted = false
     private var notificationManager: NotificationManager? = null
-    private var job: Job? = null
+    private var job = Job()
+    private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
     private val builder by lazy {
         NotificationCompat.Builder(this, CHANNEL_ID)
@@ -71,12 +72,14 @@ class ForegroundService : Service() {
     }
 
     private fun continueTimer(startTime: Long) {
-        job = GlobalScope.launch(Dispatchers.Main) {
-            while (true) {
+        var current = 10_000L
+        uiScope.launch {
+            while (current >= 0) {
+                current -= INTERVAL
                 notificationManager?.notify(
                     NOTIFICATION_ID,
                     getNotification(
-                        (System.currentTimeMillis() - startTime).displayTime().dropLast(3)
+                        current.displayTime()
                     )
                 )
                 delay(INTERVAL)
@@ -130,7 +133,8 @@ class ForegroundService : Service() {
 
     private fun getPendingIntent(): PendingIntent? {
         val resultIntent = Intent(this, MainActivity::class.java)
-        resultIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+//        resultIntent.putExtra("BLA", )
+        resultIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
         return PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_ONE_SHOT)
     }
 

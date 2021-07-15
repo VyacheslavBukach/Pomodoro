@@ -1,7 +1,10 @@
 package com.rsschool.android2021
 
+import android.R
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -9,6 +12,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rsschool.android2021.databinding.ActivityMainBinding
+
 
 class MainActivity : AppCompatActivity(), StopwatchListener, LifecycleObserver {
 
@@ -84,7 +88,8 @@ class MainActivity : AppCompatActivity(), StopwatchListener, LifecycleObserver {
     fun onAppBackgrounded() {
         val startIntent = Intent(this, ForegroundService::class.java)
         startIntent.putExtra(COMMAND_ID, COMMAND_START)
-        startIntent.putExtra(STARTED_TIMER_TIME_MS, startTime)
+        val stopwatch = stopwatches.find { it.isStarted }
+        startIntent.putExtra(STARTED_TIMER_TIME_MS, stopwatch?.currentMs)
         startService(startIntent)
     }
 
@@ -94,4 +99,18 @@ class MainActivity : AppCompatActivity(), StopwatchListener, LifecycleObserver {
         stopIntent.putExtra(COMMAND_ID, COMMAND_STOP)
         startService(stopIntent)
     }
+
+//    override fun onNewIntent(intent: Intent?) {
+//        super.onNewIntent(intent)
+//        val extras = intent!!.extras
+//        if (extras != null) {
+//            if (extras.containsKey("NotificationMessage")) {
+//                setContentView(R.layout.viewmain)
+//                // extract the extra-data in the Notification
+//                val msg = extras.getString("NotificationMessage")
+//                txtView = findViewById<View>(R.id.txtMessage) as TextView
+//                txtView.setText(msg)
+//            }
+//        }
+//    }
 }
