@@ -72,7 +72,7 @@ class ForegroundService : Service() {
     }
 
     private fun continueTimer(startTime: Long) {
-        var current = 10_000L
+        var current = startTime
         uiScope.launch {
             while (current >= 0) {
                 current -= INTERVAL
@@ -93,7 +93,7 @@ class ForegroundService : Service() {
         }
         Log.i("TAG", "commandStop()")
         try {
-            job?.cancel()
+            job.cancel()
             stopForeground(true)
             stopSelf()
         } finally {
@@ -133,7 +133,6 @@ class ForegroundService : Service() {
 
     private fun getPendingIntent(): PendingIntent? {
         val resultIntent = Intent(this, MainActivity::class.java)
-//        resultIntent.putExtra("BLA", )
         resultIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
         return PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_ONE_SHOT)
     }
