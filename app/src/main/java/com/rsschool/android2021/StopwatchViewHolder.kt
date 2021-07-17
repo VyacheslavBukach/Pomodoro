@@ -43,12 +43,7 @@ class StopwatchViewHolder(
         stopwatch.isFinish = true
         stopwatch.currentMs = stopwatch.time
         binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
-
-        if (stopwatch.isStarted) {
-            startTimer(stopwatch)
-        } else {
-            stopTimer(stopwatch)
-        }
+        stopTimer(stopwatch)
     }
 
     fun setProgress(stopwatch: Stopwatch) {

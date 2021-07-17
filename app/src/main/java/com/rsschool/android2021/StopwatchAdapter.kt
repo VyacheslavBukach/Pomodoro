@@ -56,4 +56,16 @@ class StopwatchAdapter(
             override fun getChangePayload(oldItem: Stopwatch, newItem: Stopwatch) = Any()
         }
     }
+
+    override fun onViewDetachedFromWindow(holder: StopwatchViewHolder) {
+        try {
+            val position = holder.adapterPosition
+            val stopwatch = getItem(position)
+            if (stopwatch.isStarted) {
+                holder.setIsRecyclable(false)
+            }
+        } catch (e: IndexOutOfBoundsException) {
+
+        }
+    }
 }
