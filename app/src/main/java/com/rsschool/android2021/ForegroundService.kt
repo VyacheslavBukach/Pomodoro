@@ -93,7 +93,9 @@ class ForegroundService : Service() {
         }
         Log.i("TAG", "commandStop()")
         try {
-            job.cancel()
+            if (job.isActive) {
+                uiScope.coroutineContext.cancelChildren()
+            }
             stopForeground(true)
             stopSelf()
         } finally {

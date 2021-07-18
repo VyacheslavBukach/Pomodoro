@@ -17,7 +17,7 @@ class StopwatchViewHolder(
 
     var timer: CountDownTimer? = null
     private var current = 0L
-    private var job = SupervisorJob()
+    private var job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
     fun bind(stopwatch: Stopwatch) {
@@ -95,8 +95,9 @@ class StopwatchViewHolder(
         val drawable = resources.getDrawable(R.drawable.ic_baseline_play_arrow_24)
         binding.startPauseButton.setImageDrawable(drawable)
 
-        if (job.isActive)
+        if (job.isActive) {
             uiScope.coroutineContext.cancelChildren()
+        }
 
         timer?.cancel()
 
