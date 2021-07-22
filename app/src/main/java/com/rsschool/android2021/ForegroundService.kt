@@ -84,6 +84,12 @@ class ForegroundService : Service() {
                 )
                 delay(INTERVAL)
             }
+            notificationManager?.notify(
+                NOTIFICATION_ID,
+                getNotification(
+                    "finish"
+                )
+            )
         }
     }
 
@@ -143,6 +149,5 @@ class ForegroundService : Service() {
 
         private const val CHANNEL_ID = "Channel_ID"
         private const val NOTIFICATION_ID = 777
-        private const val INTERVAL = 1000L
     }
 }
