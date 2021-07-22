@@ -21,11 +21,11 @@ class StopwatchViewHolder(
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
     fun bind(stopwatch: Stopwatch) {
-        binding.stopwatchTimer.setTextColor(Color.BLACK)
+        binding.cardView.setCardBackgroundColor(Color.WHITE)
         binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
 
         if (stopwatch.isFinish) {
-            binding.stopwatchTimer.setTextColor(Color.RED)
+            binding.cardView.setCardBackgroundColor(Color.RED)
         }
 
         if (stopwatch.isStarted) {
@@ -38,7 +38,7 @@ class StopwatchViewHolder(
     }
 
     fun stop(stopwatch: Stopwatch) {
-        binding.stopwatchTimer.setTextColor(Color.RED)
+        binding.cardView.setCardBackgroundColor(Color.RED)
         stopwatch.isStarted = false
         stopwatch.isFinish = true
         stopwatch.currentMs = stopwatch.time
