@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity(), StopwatchListener, LifecycleObserver {
 
         binding.addNewStopwatchButton.setOnClickListener {
             val minutes = binding.minutes.text.toString().toLong() * MINUTE_IN_MILLIS
-            stopwatches.add(Stopwatch(nextId++, PERIOD, false, PERIOD))
+            stopwatches.add(Stopwatch(nextId++, minutes, false, minutes))
             stopwatchAdapter.submitList(stopwatches.toList())
         }
     }

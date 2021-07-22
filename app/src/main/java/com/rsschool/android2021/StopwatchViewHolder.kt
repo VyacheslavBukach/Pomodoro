@@ -31,7 +31,7 @@ class StopwatchViewHolder(
         if (stopwatch.isStarted) {
             startTimer(stopwatch)
         } else {
-            stopTimer(stopwatch)
+            stopTimer()
         }
 
         initButtonsListeners(stopwatch)
@@ -43,12 +43,12 @@ class StopwatchViewHolder(
         stopwatch.isFinish = true
         stopwatch.currentMs = stopwatch.time
         binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
-        stopTimer(stopwatch)
+        stopTimer()
     }
 
     fun setProgress(stopwatch: Stopwatch) {
-        binding.customView.setPeriod(PERIOD)
-        binding.customView.setCurrent(PERIOD - stopwatch.currentMs)
+        binding.customView.setPeriod(stopwatch.time)
+        binding.customView.setCurrent(stopwatch.time - stopwatch.currentMs)
     }
 
     fun setTime(stopwatch: Stopwatch) {
@@ -77,12 +77,12 @@ class StopwatchViewHolder(
         timer?.start()
 
         current = stopwatch.currentMs
-        binding.customView.setPeriod(PERIOD)
+        binding.customView.setPeriod(stopwatch.time)
 
         uiScope.launch {
             while (current >= 0) {
                 current -= INTERVAL
-                binding.customView.setCurrent(PERIOD - current)
+                binding.customView.setCurrent(stopwatch.time - current)
                 delay(INTERVAL)
             }
         }
@@ -91,7 +91,7 @@ class StopwatchViewHolder(
         (binding.blinkingIndicator.background as? AnimationDrawable)?.start()
     }
 
-    private fun stopTimer(stopwatch: Stopwatch) {
+    private fun stopTimer() {
         val drawable = resources.getDrawable(R.drawable.ic_baseline_play_arrow_24)
         binding.startPauseButton.setImageDrawable(drawable)
 
