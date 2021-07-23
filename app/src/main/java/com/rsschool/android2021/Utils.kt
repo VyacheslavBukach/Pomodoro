@@ -21,6 +21,8 @@ fun Long.displayTime(): String {
     return "${displaySlot(h)}:${displaySlot(m)}:${displaySlot(s)}"
 }
 
+fun String.toMillis() = this.toLong() * MINUTE_IN_MILLIS
+
 fun displaySlot(count: Long): String {
     return if (count / 10L > 0) {
         "$count"

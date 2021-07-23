@@ -2,6 +2,7 @@ package com.rsschool.android2021
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -9,7 +10,6 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rsschool.android2021.databinding.ActivityMainBinding
-
 
 class MainActivity : AppCompatActivity(), StopwatchListener, LifecycleObserver {
 
@@ -36,10 +36,35 @@ class MainActivity : AppCompatActivity(), StopwatchListener, LifecycleObserver {
         binding.minutes.transformationMethod = null
 
         binding.addNewStopwatchButton.setOnClickListener {
-            val minutes = binding.minutes.text.toString().toLong() * MINUTE_IN_MILLIS
-            stopwatches.add(Stopwatch(nextId++, minutes, false, minutes))
-            stopwatchAdapter.submitList(stopwatches.toList())
+            val minutes = binding.minutes.text.toString().trim()
+            if (isValid(minutes)) {
+                stopwatches.add(Stopwatch(nextId++, minutes.toMillis(), false, minutes.toMillis()))
+                stopwatchAdapter.submitList(stopwatches.toList())
+            }
         }
+    }
+
+    private fun isValid(minutes: String): Boolean {
+        if (minutes.isEmpty()) {
+            showToast("Minutes is empty")
+            return false
+        }
+        return try {
+            minutes.toInt().let {
+                if (it <= 0) {
+                    showToast("Can't be 0 or less")
+                    return false
+                }
+            }
+            true
+        } catch (e: NumberFormatException) {
+            showToast("Can't be 0 or less")
+            false
+        }
+    }
+
+    private fun showToast(text: String) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
 
     override fun start(id: Int) {
