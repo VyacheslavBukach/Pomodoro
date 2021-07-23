@@ -38,12 +38,12 @@ class StopwatchViewHolder(
     }
 
     fun stop(stopwatch: Stopwatch) {
+        stopTimer()
         binding.cardView.setCardBackgroundColor(Color.RED)
         stopwatch.isStarted = false
         stopwatch.isFinish = true
         stopwatch.currentMs = stopwatch.time
         binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
-        stopTimer()
     }
 
     fun setProgress(stopwatch: Stopwatch) {
