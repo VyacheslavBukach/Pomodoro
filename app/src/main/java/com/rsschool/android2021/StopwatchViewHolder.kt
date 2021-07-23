@@ -71,7 +71,10 @@ class StopwatchViewHolder(
         val drawable = resources.getDrawable(R.drawable.ic_baseline_pause_24)
         binding.startPauseButton.setImageDrawable(drawable)
 
-        if (stopwatch.isFinish) stopwatch.isFinish = false
+        if (stopwatch.isFinish) {
+            stopwatch.isFinish = false
+            binding.cardView.setCardBackgroundColor(Color.WHITE)
+        }
 
         timer?.cancel()
         timer?.start()
