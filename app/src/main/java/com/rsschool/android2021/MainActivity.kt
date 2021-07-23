@@ -2,6 +2,8 @@ package com.rsschool.android2021
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -41,7 +43,16 @@ class MainActivity : AppCompatActivity(), StopwatchListener, LifecycleObserver {
                 stopwatches.add(Stopwatch(nextId++, minutes.toMillis(), false, minutes.toMillis()))
                 stopwatchAdapter.submitList(stopwatches.toList())
                 binding.minutes.text.clear()
+                closeKeyboard()
             }
+        }
+    }
+
+    private fun closeKeyboard() {
+        val view: View? = this.currentFocus
+        if (view != null) {
+            val manager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            manager.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 
