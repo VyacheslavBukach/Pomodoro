@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity(), StopwatchListener, LifecycleObserver {
             if (isValid(minutes)) {
                 stopwatches.add(Stopwatch(nextId++, minutes.toMillis(), false, minutes.toMillis()))
                 stopwatchAdapter.submitList(stopwatches.toList())
+                binding.minutes.text.clear()
             }
         }
     }
