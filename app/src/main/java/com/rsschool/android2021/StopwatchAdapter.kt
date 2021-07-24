@@ -1,6 +1,5 @@
 package com.rsschool.android2021
 
-import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -18,26 +17,9 @@ class StopwatchAdapter(
     }
 
     override fun onBindViewHolder(holder: StopwatchViewHolder, position: Int) {
-
-        if (holder.timer != null) {
-            holder.timer!!.cancel()
-        }
-
         val stopwatch = getItem(position)
-
-        holder.timer = object : CountDownTimer(stopwatch.currentMs, INTERVAL) {
-            override fun onTick(millisUntilFinished: Long) {
-                stopwatch.currentMs = millisUntilFinished
-                holder.setTime(stopwatch)
-            }
-
-            override fun onFinish() {
-                holder.stop(stopwatch)
-            }
-        }
-
         holder.bind(stopwatch)
-        holder.setProgress(stopwatch)
+        holder.showProgress(stopwatch)
     }
 
     private companion object {

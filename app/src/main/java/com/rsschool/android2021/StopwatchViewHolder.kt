@@ -3,7 +3,6 @@ package com.rsschool.android2021
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
-import android.os.CountDownTimer
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
 import com.rsschool.android2021.databinding.StopwatchItemBinding
@@ -15,7 +14,6 @@ class StopwatchViewHolder(
     private val resources: Resources
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    var timer: CountDownTimer? = null
     private var current = 0L
     private var job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
@@ -37,22 +35,19 @@ class StopwatchViewHolder(
         initButtonsListeners(stopwatch)
     }
 
-    fun stop(stopwatch: Stopwatch) {
+    private fun stop(stopwatch: Stopwatch) {
         stopTimer()
         binding.cardView.setCardBackgroundColor(Color.RED)
         stopwatch.isStarted = false
         stopwatch.isFinish = true
         stopwatch.currentMs = stopwatch.time
         binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
+        showProgress(stopwatch)
     }
 
-    fun setProgress(stopwatch: Stopwatch) {
+    fun showProgress(stopwatch: Stopwatch) {
         binding.customView.setPeriod(stopwatch.time)
         binding.customView.setCurrent(stopwatch.time - stopwatch.currentMs)
-    }
-
-    fun setTime(stopwatch: Stopwatch) {
-        binding.stopwatchTimer.text = stopwatch.currentMs.displayTime()
     }
 
     private fun initButtonsListeners(stopwatch: Stopwatch) {
@@ -76,18 +71,17 @@ class StopwatchViewHolder(
             binding.cardView.setCardBackgroundColor(Color.WHITE)
         }
 
-        timer?.cancel()
-        timer?.start()
-
         current = stopwatch.currentMs
-        binding.customView.setPeriod(stopwatch.time)
 
         uiScope.launch {
             while (current >= 0) {
+                delay(INTERVAL)
                 current -= INTERVAL
                 binding.customView.setCurrent(stopwatch.time - current)
-                delay(INTERVAL)
+                binding.stopwatchTimer.text = current.displayTime()
+                stopwatch.currentMs = current
             }
+            stop(stopwatch)
         }
 
         binding.blinkingIndicator.isInvisible = false
@@ -101,8 +95,6 @@ class StopwatchViewHolder(
         if (job.isActive) {
             uiScope.coroutineContext.cancelChildren()
         }
-
-        timer?.cancel()
 
         binding.blinkingIndicator.isInvisible = true
         (binding.blinkingIndicator.background as? AnimationDrawable)?.stop()

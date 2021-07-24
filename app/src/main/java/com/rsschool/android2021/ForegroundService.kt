@@ -75,6 +75,7 @@ class ForegroundService : Service() {
         var current = startTime
         uiScope.launch {
             while (current >= 0) {
+                delay(INTERVAL)
                 current -= INTERVAL
                 notificationManager?.notify(
                     NOTIFICATION_ID,
@@ -82,7 +83,6 @@ class ForegroundService : Service() {
                         current.displayTime()
                     )
                 )
-                delay(INTERVAL)
             }
             notificationManager?.notify(
                 NOTIFICATION_ID,
